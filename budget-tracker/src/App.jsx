@@ -1,6 +1,7 @@
 import { useState } from "react"
 import TransactionForm from "./components/TransactionForm"
 import TransactionList from "./components/TransactionList"
+import Balance from "./components/Balance"
 
 export default function App() {
   const [transactions, setTransactions] = useState([])
@@ -13,6 +14,8 @@ export default function App() {
       <h1>Budget Tracker</h1>
       <TransactionForm onAdd={addTransaction} />
       <TransactionList transactions={transactions} onDelete={deleteTransaction} />
+      <Balance transactions={transactions} />
+
     </div>
   )
 }
