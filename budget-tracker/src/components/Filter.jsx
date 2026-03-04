@@ -1,23 +1,23 @@
 export default function Filter({ current, onChange }) {
   return (
-    <div>
+    <div className="filter-bar">
       <button
+        className={current === "all" ? "active" : ""}
         onClick={() => onChange("all")}
-        style={{ fontWeight: current === "all" ? "bold" : "normal" }}
       >
         Tous
       </button>
       <button
+        className={current === "income" ? "active" : ""}
         onClick={() => onChange("income")}
-        style={{ fontWeight: current === "income" ? "bold" : "normal" }}
       >
-        Revenus
+        💰 Revenus
       </button>
       <button
+        className={current === "expense" ? "active" : ""}
         onClick={() => onChange("expense")}
-        style={{ fontWeight: current === "expense" ? "bold" : "normal" }}
       >
-        Dépenses
+        💸 Dépenses
       </button>
     </div>
   )

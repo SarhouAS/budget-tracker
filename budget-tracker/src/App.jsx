@@ -6,7 +6,6 @@ import Filter from "./components/Filter"
 
 export default function App() {
 
-  // Chargement initial depuis localStorage
   const [transactions, setTransactions] = useState(() => {
     const saved = localStorage.getItem("transactions")
     return saved ? JSON.parse(saved) : []
@@ -14,24 +13,13 @@ export default function App() {
 
   const [filter, setFilter] = useState("all")
 
-  // Sauvegarde automatique à chaque modification des transactions
   useEffect(() => {
     localStorage.setItem("transactions", JSON.stringify(transactions))
   }, [transactions])
 
-  // Ajouter une transaction
-  const addTransaction = (t) => {
-    setTransactions((prev) => [t, ...prev])
-  }
+  const addTransaction    = (t)   => setTransactions((prev) => [t, ...prev])
+  const deleteTransaction = (id)  => setTransactions((prev) => prev.filter((t) => t.id !== id))
 
-  // Supprimer une transaction
-  const deleteTransaction = (id) => {
-    setTransactions((prev) =>
-      prev.filter((t) => t.id !== id)
-    )
-  }
-
-  // Filtrage
   const filtered =
     filter === "all"
       ? transactions
@@ -39,14 +27,36 @@ export default function App() {
 
   return (
     <div>
-      <h1>Budget Tracker</h1>
-      <Balance transactions={transactions} />
-      <TransactionForm onAdd={addTransaction} />
-      <Filter current={filter} onChange={setFilter} />
-      <TransactionList
-        transactions={filtered}
-        onDelete={deleteTransaction}
-      />
+
+      <header className="app-header">
+        <div>
+          <h1>Budget <em>Tracker</em></h1>
+          <p>Gestion de budget personnel · React + Vite</p>
+        </div>
+        <div className="header-badge">
+          <span>{transactions.length}</span>
+          <small>transactions</small>
+        </div>
+      </header>
+
+      <div id="root-inner">
+
+        <Balance transactions={transactions} />
+
+        <TransactionForm onAdd={addTransaction} />
+
+        <div className="transactions-section">
+          <div className="section-header">
+            <h2>Historique</h2>
+            <Filter current={filter} onChange={setFilter} />
+          </div>
+          <TransactionList
+            transactions={filtered}
+            onDelete={deleteTransaction}
+          />
+        </div>
+
+      </div>
     </div>
   )
 }
