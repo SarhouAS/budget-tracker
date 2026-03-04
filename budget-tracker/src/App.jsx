@@ -1,19 +1,41 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import TransactionForm from "./components/TransactionForm"
 import TransactionList from "./components/TransactionList"
 import Balance from "./components/Balance"
 import Filter from "./components/Filter"
 
 export default function App() {
-  const [transactions, setTransactions] = useState([])
+
+  // Chargement initial depuis localStorage
+  const [transactions, setTransactions] = useState(() => {
+    const saved = localStorage.getItem("transactions")
+    return saved ? JSON.parse(saved) : []
+  })
+
   const [filter, setFilter] = useState("all")
 
-  const addTransaction = (t) => setTransactions([t, ...transactions])
-  const deleteTransaction = (id) => setTransactions(transactions.filter((t) => t.id !== id))
+  // Sauvegarde automatique à chaque modification des transactions
+  useEffect(() => {
+    localStorage.setItem("transactions", JSON.stringify(transactions))
+  }, [transactions])
 
-  const filtered = filter === "all"
-    ? transactions
-    : transactions.filter((t) => t.type === filter)
+  // Ajouter une transaction
+  const addTransaction = (t) => {
+    setTransactions((prev) => [t, ...prev])
+  }
+
+  // Supprimer une transaction
+  const deleteTransaction = (id) => {
+    setTransactions((prev) =>
+      prev.filter((t) => t.id !== id)
+    )
+  }
+
+  // Filtrage
+  const filtered =
+    filter === "all"
+      ? transactions
+      : transactions.filter((t) => t.type === filter)
 
   return (
     <div>
@@ -21,7 +43,10 @@ export default function App() {
       <Balance transactions={transactions} />
       <TransactionForm onAdd={addTransaction} />
       <Filter current={filter} onChange={setFilter} />
-      <TransactionList transactions={filtered} onDelete={deleteTransaction} />
+      <TransactionList
+        transactions={filtered}
+        onDelete={deleteTransaction}
+      />
     </div>
   )
 }
